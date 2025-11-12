@@ -1,15 +1,5 @@
 import * as repo from "../repository/studentRepository.js";
 
-const createErrorResponse = (status, message, path) => {
-    return {
-        timestamp: new Date().toISOString(),
-        status,
-        error: status === 404 ? "Not Found" : "Error",
-        message,
-        path
-    };
-};
-
 export const addStudent = (req, res) => {
     const success = repo.addStudent(req.body);
     if (success) {
@@ -25,20 +15,17 @@ export const findStudent = (req, res) => {
         const {password, ...studentWithoutPassword} = student;
         res.json(studentWithoutPassword);
     } else {
-        res.status(404).json(
-            createErrorResponse(404, `Student with id ${req.params.id} not found`, req.path)
-        );
+        res.status(404).send();
     }
 }
 
 export const updateStudent = (req, res) => {
     const student = repo.updateStudent(+req.params.id, req.body);
     if (student) {
-        res.json(student);
+        const {scores, ...studentWithoutScores} = student;
+        res.json(studentWithoutScores);
     } else {
-        res.status(404).json(
-            createErrorResponse(404, `Student with id ${req.params.id} not found`, req.path)
-        );
+        res.status(404).send();
     }
 }
 
@@ -48,34 +35,34 @@ export const deleteStudent = (req, res) => {
         const {password, ...studentWithoutPassword} = student;
         res.json(studentWithoutPassword);
     } else {
-        res.status(404).json(
-            createErrorResponse(404, `Student with id ${req.params.id} not found`, req.path)
-        );
+        res.status(404).send();
     }
 }
 
 export const addScore = (req, res) => {
-    const success = repo.addScore(+req.params.id, req.body);
+    const success = repo.addScore(+req.params.id, req.body.examName, +req.body.score);
     if (success) {
         res.status(204).send();
     } else {
-        res.status(404).json(
-            createErrorResponse(404, "student not found", req.path)
-        );
+        res.status(404).send();
     }
 }
 
 export const findByName = (req, res) => {
     const students = repo.findByName(req.params.name);
-    res.json(students);
+    const studentsWithoutPasswords = students.map(student => ({...student, password: undefined}))
+    res.json(studentsWithoutPasswords);
 }
 
 export const countByNames = (req, res) => {
-    const count = repo.countByNames(req.query.names);
-    res.json(count);
+    const names = req.query.names;
+    const list = Array.isArray(names) ? names : [names];
+    const count = repo.countByNames(list);
+    res.json(count)
 }
 
 export const findByMinScore = (req, res) => {
     const students = repo.findByMinScore(req.params.exam, +req.params.minScore);
-    res.json(students);
+    const studentsWithoutPasswords = students.map(student => ({...student, password: undefined}))
+    res.json(studentsWithoutPasswords);
 }

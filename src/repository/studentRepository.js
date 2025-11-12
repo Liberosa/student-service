@@ -1,77 +1,52 @@
-import {Student} from "../model/student.js";
+import { Student } from "../model/student.js";
 
 const students = new Map();
 
 export const addStudent = ({id, name, password}) => {
-    if (students.has(+id)) {
+    if(students.has(id)) {
         return false;
     }
-    students.set(+id, new Student(+id, name, password));
+    students.set(id, new Student(id, name, password));
     return true;
-};
-export const findStudent = (id) => students.get(id);
+}
 
-export const updateStudent = (id, {name, password}) => {
-    const student = students.get(id);
-    if (!student) {
-        return null;
-    }
-    if (name !== undefined) student.name = name;
-    if (password !== undefined) student.password = password;
-    return student;
-};
+export const findStudent = id => students.get(id);
 
-export const deleteStudent = (id) => {
+export const deleteStudent = id => {
     const student = students.get(id);
-    if (!student) {
-        return null;
+    if (student) {
+        students.delete(id);
+        return student;
     }
-    students.delete(id);
-    return student;
-};
+}
 
-export const addScore = (id, {examName, score}) => {
+export const updateStudent = (id, data) => {
     const student = students.get(id);
-    if (!student) {
-        return false;
+    if (student) {
+        Object.assign(student, data);
+        return student;
     }
-    student.scores[examName] = score;
-    return true;
-};
+}
+
+export const addScore = (id, exam, score) => {
+    const student = students.get(id);
+    if (student) {
+        student.scores[exam] = score;
+        return true;
+
+    }
+    return false;
+}
 
 export const findByName = (name) => {
-    const result = [];
-    const lowerName = name.toLowerCase();
-    for (const student of students.values()) {
-        if (student.name.toLowerCase() === lowerName) {
-            const {password, ...studentWithoutPassword} = student;
-            result.push(studentWithoutPassword);
-        }
-    }
-    return result;
-};
+    return Array.from(students.values()).filter(s => s.name.toLowerCase() === name.toLowerCase());
+}
 
 export const countByNames = (names) => {
-    if (!names) return 0;
-    const namesArray = Array.isArray(names) ? names : [names];
-    const lowerNames = namesArray.map(n => n.toLowerCase());
+    names = names.map(name => name.toLowerCase());
+    return Array.from(students.values()).filter(s => names.includes(s.name.toLowerCase())).length;
+}
 
-    let count = 0;
-    for (const student of students.values()) {
-        if (lowerNames.includes(student.name.toLowerCase())) {
-            count++;
-        }
-    }
-    return count;
-};
-
-export const findByMinScore = (examName, minScore) => {
-    const result = [];
-    for (const student of students.values()) {
-        if (student.scores[examName] && student.scores[examName] >= minScore) {
-            const {password, ...studentWithoutPassword} = student;
-            result.push(studentWithoutPassword);
-        }
-    }
-    return result;
-};
+export const findByMinScore = (exam, minScore) => {
+    return Array.from(students.values()).filter(s => s.scores[exam] >= minScore);
+}
