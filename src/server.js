@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import studentRouter from './routes/studentRoutes.js';
 import {MongoClient} from "mongodb";
-import {init} from "./repository/studentRepository.js";
+import {init} from "./service/studentService.js";
 
 dotenv.config();
 
