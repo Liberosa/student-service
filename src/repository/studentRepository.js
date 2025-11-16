@@ -35,19 +35,14 @@ export const addScore = async (id, exam, score) => {
 }
 
 export const findByName = async (name) => {
-    return await collection.find({
-        name: {$regex: new RegExp(`^${name}$`, 'i')}
-    }).toArray();
+    return await collection.find({name: {$regex: `^${name}$`, $options: 'i'}}).toArray();
 }
 
 export const countByNames = async (names) => {
-    return await collection.aggregate([
-        {$match: {name: {$in: names}}},
-        {$group: {
-                _id: "$name",
-                count: {$sum: 1}
-            }}
-    ]).toArray();
+    const regexConditions = names.map(name => ({
+        name: {$regex: `^${name}$`, $options: 'i'}
+    }));
+    return await collection.countDocuments({$or: regexConditions});
 }
 
 export const findByMinScore = async (exam, minScore) => {
