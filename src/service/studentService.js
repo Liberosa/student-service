@@ -33,7 +33,7 @@ export const updateStudent = async (id, data) => {
 }
 
 export const addScore = async (id, exam, score) => {
-    return repo.updateStudentScore(id, exam, score);
+    return await repo.updateStudentScore(id, exam, score);
 
 }
 
@@ -48,7 +48,7 @@ export const findByName = async (name) => {
 }
 
 export const countByNames = async (names) => {
-    return  repo.countStudentsByNames(names);
+    return await repo.countStudentsByNames(names);
 
 }
 
@@ -57,7 +57,7 @@ export const findByMinScore = async (exam, minScore) => {
     if (Array.isArray(students)) {
         students.forEach(student => {
             student.password = undefined;
-        })
+        });
 
     }
     return students;
