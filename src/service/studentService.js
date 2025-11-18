@@ -39,21 +39,21 @@ export const addScore = async (id, exam, score) => {
 
 export const findByName = async (name) => {
     const students = await repo.findStudentByName(name);
-    if (students) {
-        students.password = undefined;
-    }
+    students.forEach(student => {
+        student.password = undefined;
+    });
     return students;
 }
 
 export const countByNames = async (names) => {
-    const students = repo.countStudentsByNames(names);
+    const students = await repo.countStudentsByNames(names);
     return students;
 }
 
 export const findByMinScore = async (exam, minScore) => {
-    const students = repo.findStudentsByMinScore(exam, minScore);
-    if (students) {
-        students.password = undefined;
-    }
+    const students = await repo.findStudentsByMinScore(exam, minScore);
+    students.forEach(student => {
+        student.password = undefined;
+    });
     return students;
 }
