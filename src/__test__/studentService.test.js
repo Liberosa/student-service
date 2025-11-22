@@ -18,7 +18,7 @@ await jest.unstable_mockModule('../repository/studentRepository.js', () => ({
   ...repoFns,
 }));
 
-// Динамический импорт после моков
+// Dynamic import after mocks
 const service = await import('../service/studentService.js');
 const repo = await import('../repository/studentRepository.js');
 
@@ -29,7 +29,7 @@ describe('studentService', () => {
   });
 
   describe('addStudent', () => {
-    test('возвращает false, если студент уже существует', async () => {
+    test('returns false if the student already exists', async () => {
       repo.findStudentById.mockResolvedValue({ _id: '1' });
 
       const result = await service.addStudent({ id: '1', name: 'Ann', password: 'p' });

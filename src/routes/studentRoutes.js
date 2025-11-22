@@ -8,7 +8,7 @@ import {
     findByName,
     findStudent,
     updateStudent
-} from "../contoller/studentController.js";
+} from "../controller/studentController.js";
 
 const router = Router();
 
